@@ -37,3 +37,12 @@ mv coAuthorsCiteseer.graph _data/coAuthorsCiteseer
     ./_data/coAuthorsCiteseer/coAuthorsCiteseer.graph
 
 ./lcheck -c -l ./_results/coAuthorsCiteseer/coAuthorsCiteseer.labels ./_data/coAuthorsCiteseer/coAuthorsCiteseer.graph
+
+
+# --
+# Run on larger datasets
+
+# This is a generic algorithm, so can be run on any of the available datasets
+# 
+# However, we will likely be adding documentation about particularly relevant
+# in the near future.
