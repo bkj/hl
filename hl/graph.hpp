@@ -32,6 +32,8 @@
 #include <ctype.h>
 #include <string.h>
 #include <errno.h>
+#include <iostream>
+#include <set>
 
 namespace hl {
 
@@ -121,7 +123,7 @@ class Graph {
             if (++i < j) a[i] = a[j];
         }
         a.resize(i+1);
-
+        
         // Order arcs by direction and determine adjacency lists
         std::sort(a.begin(), a.end(), cmp_by_direction());
         arcs.resize(a.size());
@@ -161,6 +163,8 @@ class Graph {
     //     c bla-bla  - comment line
     //     a u v w    - arc (u,v) with length w
     bool read_dimacs(FILE *file, bool undirected = false) {
+        fprintf(stderr, "graph:hpp: trying read_dimacs\n");
+        
         char buf[512];
         long long u,v,w,m;
         bool inited = false;
@@ -202,6 +206,8 @@ class Graph {
     //    ...
     //    s w_1 .. w_ncon v_1 l_1 ...  - line for a vertex: size (if i), vertex weights (if j), edges with lengths (if k)
     bool read_metis(FILE *file, bool undirected = false) {
+        fprintf(stderr, "graph:hpp: trying read_metis\n");
+        
         int c, i = 0, fmt = 0, ncon = 0, skip = 0;
         long long elem = 0;
         Vertex v = 0, head = none;
@@ -227,8 +233,12 @@ class Graph {
                     } else if (i >= skip) {
                         if (fmt % 10 == 1) {
                             if ((i-skip) % 2 == 0) head = elem-1;
-                            else if (!add_tmp_arc(v-1, head, elem, undirected)) return false;
-                        } else if (!add_tmp_arc(v-1, elem-1, 1, undirected)) return false;
+                            else if (!add_tmp_arc(v-1, head, elem, undirected)) {
+                                return false;
+                            }
+                        } else if (!add_tmp_arc(v-1, elem-1, 1, undirected)) {
+                            return false;
+                        }
                     }
                     ++i; elem = 0; inelem = false;
                 }
@@ -246,20 +256,48 @@ class Graph {
     //    # Nodes: n Edges: m    - header: n vertices, m edges
     //    #                      - comment line
     //    u v                    - arc (u,v) with unit length
-    bool read_snap(FILE* file, bool undirected = false) {
+    // bool read_snap(FILE* file, bool undirected = false) {
+    //     printf("read_snap\n");
+    //     char buf[512];
+    //     long long u,v,m;
+    //     bool inited = false;
+    //     while (fgets(buf, sizeof(buf), file)) {
+    //         if (buf[0] == '#') {
+    //             if (sscanf(buf, "# Nodes: %lld Edges: %lld", &n, &m) == 2) {
+    //                 if (inited) return false; inited = true;
+    //             }
+    //             for (int c = buf[strlen(buf)-1]; c != '\n' && c != EOF; c = fgetc(file));
+    //         } else {
+    //             if (buf[strlen(buf)-1] != '\n' && !feof(file)) return false;
+    //             if (sscanf(buf, "%lld %lld", &u, &v) != 2) return false;
+    //             if (!add_tmp_arc(u, v, 1, undirected)) return false;
+    //         }
+    //     }
+    //     std::cout << "finalize" << std::cout;
+    //     finalize();
+    //     return true;
+    // }
+    
+    bool read_edgelist(FILE* file, bool undirected = false) {
+        fprintf(stderr, "graph:hpp: trying read_edgelist\n");
         char buf[512];
-        long long u,v,m;
-        bool inited = false;
+        long long u,v;
+        std::set<long> nodes;
         while (fgets(buf, sizeof(buf), file)) {
-            if (buf[0] == '#') {
-                if (sscanf(buf, "# Nodes: %lld Edges: %lld", &n, &m) == 2) {
-                    if (inited) return false; inited = true;
-                }
-                for (int c = buf[strlen(buf)-1]; c != '\n' && c != EOF; c = fgetc(file));
-            } else {
-                if (buf[strlen(buf)-1] != '\n' && !feof(file)) return false;
-                if (sscanf(buf, "%lld %lld", &u, &v) != 2) return false;
-                if (!add_tmp_arc(u, v, 1, undirected)) return false;
+            if (buf[strlen(buf)-1] != '\n' && !feof(file)) return false;
+            if (sscanf(buf, "%lld %lld", &u, &v) != 2) return false;
+            
+            tmp_arcs.push_back(std::make_pair(u, Arc(v, 1, true, undirected)));
+            tmp_arcs.push_back(std::make_pair(v, Arc(u, 1, undirected, true)));
+            m += 1 + undirected; // Edge count
+            
+            if(nodes.find(u) == nodes.end()) {
+                nodes.insert(u);
+                n++;
+            }
+            if(nodes.find(v) == nodes.end()) {
+                nodes.insert(v);
+                n++;
             }
         }
         finalize();
@@ -288,7 +326,8 @@ public:
         if ((file = fopen(filename, "r")) == NULL) return false;
         if (read_dimacs(file, undirected)) { fclose(file); return true; } rewind(file); reset();
         if (read_metis(file, undirected)) { fclose(file); return true; } rewind(file); reset();
-        if (read_snap(file, undirected)) { fclose(file); return true; } fclose(file); reset();
+        // if (read_snap(file, undirected)) { fclose(file); return true; } fclose(file); reset();
+        if (read_edgelist(file, undirected)) { fclose(file); return true; } fclose(file); reset();
         return false;
     }
 

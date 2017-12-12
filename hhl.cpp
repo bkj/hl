@@ -76,13 +76,13 @@ int main(int argc, char *argv[]) {
         std::exit(1);
     }
     std::cout << "Graph has " << g.get_n() << " vertices and " << g.get_m() << " arcs" << std::endl;
-
+    
     Labeling labels(g.get_n());
-    std::vector<Vertex> order;
-
+    std::vector<Vertex> order;  
+    
     if (is_usp) UHHL(g, num_threads).run(type, order, labels);
     else         HHL(g, num_threads).run(type, order, labels);
-
+    
     std::cout << "Average label size " << labels.get_avg() << std::endl;
     std::cout << "Maximum label size " << labels.get_max() << std::endl;
 
