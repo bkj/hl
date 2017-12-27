@@ -31,9 +31,6 @@ mv coAuthorsCiteseer.graph _data/coAuthorsCiteseer
     -l ./_results/coAuthorsCiteseer/coAuthorsCiteseer.labels \
     ./_data/coAuthorsCiteseer/coAuthorsCiteseer.graph
 
-./lcheck -c -l ./_results/coAuthorsCiteseer/coAuthorsCiteseer.labels ./_data/coAuthorsCiteseer/coAuthorsCiteseer.graph
-
-
 # --
 # Run on larger datasets
 
