@@ -1,9 +1,9 @@
-#### hl - Hub Labeling Algorithms
+#### hl (Hub Labeling)
 
 #### Installation
 
 ```
-    make all
+    make all -j12
 ```
 
 #### Usage

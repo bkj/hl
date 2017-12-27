@@ -2,16 +2,10 @@
 
 # run.sh
 
-
-# --
-# Installation
-
-make all -j12
-
 # --
 # Run on email dataset (3 seconds)
 
-mkdir -p {_data,_results}/email
+mkdir -p _results/email
 
 # METIS input + verify answers
 ./hhl -o ./_results/email/email.order -l ./_results/email/email.labels ./_data/email/email.graph
@@ -24,6 +18,7 @@ mkdir -p {_data,_results}/email
 
 # --
 # Run on coAuthorsCiteseer dataset (20 minutes)
+# !! See README.orig for a little explanation about eg `akiba` vs `hhl`
 
 mkdir -p {_data,_results}/coAuthorsCiteseer
 
