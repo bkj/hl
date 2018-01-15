@@ -17,7 +17,7 @@ mkdir -p _results/email
 
 
 # --
-# Run on coAuthorsCiteseer dataset (20 minutes)
+# Run on coAuthorsCiteseer dataset (200k vertices, 20 minutes)
 # !! See README.orig for a little explanation about eg `akiba` vs `hhl`
 
 mkdir -p {_data,_results}/coAuthorsCiteseer
@@ -30,6 +30,7 @@ mv coAuthorsCiteseer.graph _data/coAuthorsCiteseer
 ./akiba -o ./_results/coAuthorsCiteseer/coAuthorsCiteseer.order \
     -l ./_results/coAuthorsCiteseer/coAuthorsCiteseer.labels \
     ./_data/coAuthorsCiteseer/coAuthorsCiteseer.graph
+
 
 # --
 # Run on larger datasets
