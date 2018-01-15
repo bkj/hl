@@ -20,11 +20,11 @@ mkdir -p _results/email
 # Run on coAuthorsCiteseer dataset (200k vertices, 20 minutes)
 # !! See README.orig for a little explanation about eg `akiba` vs `hhl`
 
-mkdir -p {_data,_results}/coAuthorsCiteseer
+mkdir -p _results/coAuthorsCiteseer
 
-wget https://www.cc.gatech.edu/dimacs10/archive/data/coauthor/coAuthorsCiteseer.graph.bz2
-bunzip2 coAuthorsCiteseer.graph.bz2
-mv coAuthorsCiteseer.graph _data/coAuthorsCiteseer
+wget --header "Authorization:$TOKEN" https://hiveprogram.com/data/_v1/hl/coAuthorsCiteseer.tar.gz
+tar -xzvf coAuthorsCiteseer.tar.gz
+mv coAuthorsCiteseer _data/coAuthorsCiteseer
 
 ./degree -o ./_results/coAuthorsCiteseer/coAuthorsCiteseer.order ./_data/coAuthorsCiteseer/coAuthorsCiteseer.graph
 ./akiba -o ./_results/coAuthorsCiteseer/coAuthorsCiteseer.order \
